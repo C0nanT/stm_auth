@@ -33,5 +33,15 @@ if ($conn->query($sql) === TRUE) {
     echo "Erro ao criar tabela: " . $conn->error . "\n";
 }
 
+$password = password_hash('admin', PASSWORD_DEFAULT); 
+$password_check_response = 'admin'; 
+$sql = "INSERT INTO users (name, email, password, password_check, password_check_response) VALUES ('admin', 'admin@admin.com', '$password', 'Qual seu nome de usuário?', '$password_check_response')";
+
+if ($conn->query($sql) === TRUE) {
+    echo "Usuário admin adicionado com sucesso\n";
+} else {
+    echo "Erro ao adicionar usuário admin: " . $conn->error . "\n";
+}
+
 $conn->close();
 ?>
