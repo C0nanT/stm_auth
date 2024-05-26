@@ -1,7 +1,7 @@
   <h1>Sistema de Autenticação</h1>
   <p>
       Este é um projeto de sistema de autenticação que permite a criação e o login de usuários. Foi desenvolvido como
-      seminário para a Uniaseelvi.
+      seminário para a Uniasselvi.
   </p>
 
   <h2>Funcionalidades</h2>
