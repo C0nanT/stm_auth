@@ -32,7 +32,8 @@
       </li>
       <li>
           <p><strong>Configure o banco de dados:</strong></p>
-          <p>Crie um banco de dados MySQL e importe o arquivo <code>database.sql</code> incluído no repositório.</p>
+          <p>Após acessar a pasta do projeto no terminal, execute a migração</p>
+          <pre><code>php database/migrate.php</code></pre>
       </li>
       <li>
           <p><strong>Configure as variáveis de ambiente:</strong></p>
