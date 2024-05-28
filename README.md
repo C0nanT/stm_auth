@@ -50,4 +50,5 @@
   <p>### Links do perfil do GitHub de cada um</p>
       <ul>
         <li><a href="https://github.com/c0nant">Conan Torres</a></li>
+        <li><a href="https://github.com/thiagoedson">Thiago Edson</a></li>
     </ul>
