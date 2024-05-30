@@ -5,6 +5,13 @@ class DatabaseMigration
     private $conn;
     private $dbName = "stm_auth";
 
+    /**
+     * Construtor da classe DatabaseMigration.
+     *
+     * Este método é chamado quando um objeto da classe é criado.
+     * Ele inicializa a conexão com o banco de dados usando o nome do servidor, nome de usuário e senha fornecidos.
+     * Se a conexão falhar, ele interromperá o script e exibirá a mensagem de erro.
+     */
     public function __construct()
     {
         $servername = ""; // replace with your server name
