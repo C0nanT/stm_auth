@@ -1,0 +1,13 @@
+{
+  "name": "user/stm_auth",
+  "description": "Projeto Paper Uniasselvi",
+  "require": {
+    "php": "^8.2",
+    "thingengineer/mysqli-database-class": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  }
+}
