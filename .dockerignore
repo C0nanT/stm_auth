@@ -1,0 +1,14 @@
+# .dockerignore
+node_modules
+npm-debug.log
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+.git
+/docker/mysql/*
+/docker/mysql/Dockerfile
+/docker/php/Dockerfile
+/database/
+composer.lock
+vendor/

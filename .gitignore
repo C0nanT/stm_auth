@@ -1,2 +1,5 @@
 config.php
 .idea
+database/mysql_data/*
+vendor
+composer.lock

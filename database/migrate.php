@@ -3,38 +3,55 @@
 class DatabaseMigration
 {
     private $conn;
-    private $dbName = "stm_auth";
+    private $dbName;
 
     /**
      * Construtor da classe DatabaseMigration.
-     *
-     * Este método é chamado quando um objeto da classe é criado.
-     * Ele inicializa a conexão com o banco de dados usando o nome do servidor, nome de usuário e senha fornecidos.
-     * Se a conexão falhar, ele interromperá o script e exibirá a mensagem de erro.
      */
     public function __construct()
     {
-        $servername = ""; // replace with your server name
-        $username = ""; // replace with your username
-        $password = ""; // replace with your password
+
+        $output = [];
+
+        $servername = getenv('DB_SERVERNAME'); // obtém o nome do servidor do ambiente
+        $username = getenv('DB_USERNAME'); // obtém o nome de usuário do ambiente
+        $password = getenv('DB_PASSWORD'); // obtém a senha do ambiente
+        $this->dbName = getenv('DB_DATABASE'); // obtém o nome do banco de dados do ambiente
+
+        $output [] = "Tentando conectar ao banco de dados: $servername\n";
 
         try {
             $this->conn = new mysqli($servername, $username, $password);
+            if ($this->conn->connect_error) {
+                $output [] = ("Falha na conexão: " . $this->conn->connect_error);
+            }
+            $output [] =  "Conexão estabelecida com sucesso\n";
         } catch (Exception $e) {
-            die("Connection failed: " . $e->getMessage());
+            $output[] =  ("Connection failed: " . $e->getMessage());
         }
+
+
+        return $output;
+
     }
 
     public function migrate()
     {
+        $output = [];
+
         try {
+            $output[] = "Iniciando migração...\n";
             $this->dropDatabase();
             $this->createDatabase();
             $this->createUsersTable();
             $this->insertAdminUser();
+            $output[] = "Migração concluída com sucesso\n";
         } catch (Exception $e) {
-            echo "Error during migration: " . $e->getMessage();
+            $output[] = "Erro durante a migração: " . $e->getMessage();
         }
+
+        // Retorna a saída como uma string
+        return $output;
     }
 
     private function dropDatabase()
@@ -88,8 +105,7 @@ class DatabaseMigration
     {
         $this->conn->close();
     }
+
+
+
 }
-
-$migration = new DatabaseMigration();
-$migration->migrate();
-
