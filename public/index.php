@@ -134,8 +134,8 @@ require './config.php';
                 <div class="form-group">
                     <button type="button"
                             id="btnLogin"
-                            class="btn btn-primary my-2">
-                        Logar
+                            class="btn btn-dark my-2">
+                        Entrar
                     </button>
                 </div>
             </form>
