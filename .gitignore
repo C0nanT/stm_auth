@@ -3,3 +3,7 @@ config.php
 database/mysql_data/*
 vendor
 composer.lock
+/node_modules/
+/public/assets/bootstrap
+/public/assets/animate
+/public/assets/jquery
