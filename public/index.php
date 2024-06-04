@@ -12,39 +12,146 @@ require './config.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seminário - Uniasselvi</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/animate/animate.min.css">
     <link rel="stylesheet" href="/assets/style.css">
- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-            crossorigin="anonymous"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script src="/assets/jquery/jquery.min.js"></script>
+    <script src="/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <style>
+
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .pic {
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+            /* background-image: url("https://4kwallpapers.com/images/wallpapers/dark-blue-pink-2560x2560-12661.jpg");*/
+            background-image: url("assets/images/bg_unsplash.jpg");
+            background-size: cover;
+            background-position: center;
+        }
+
+        .container {
+            width: 50%;
+            height: 100%;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+
+
+        @media only screen and (max-width: 750px) {
+            .pic {
+                display: none;
+            }
+
+            /* .pic2 {
+                display: block;
+            } */
+            .container {
+                width: 100%;
+            }
+        }
+
+        img {
+            width: 120px;
+            border-radius: 10px;
+            border: 1px solid #494954;
+        }
+
+
+        .inp {
+            width: 350px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        a {
+            text-decoration: none;
+            color: #000000;
+        }
+
+        button.loading {
+            background-image: url('loading.gif');
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .forgot-password {
+            margin-top: 10px;
+            display: block;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+            color: #0d6efd;
+        }
+
+    </style>
 
 </head>
 
 <body>
-<div class="login-container">
-    <h2>Login</h2>
-    <form action="login.php" method="POST">
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required>
+<div class="container">
+
+    <div class="pic2"></div>
+
+    <div class="row">
+        <div class="col-12">
+            <lottie-player src="assets/json/logo.json" background="transparent" speed="1"
+                           style="width: 100px; height: 100px;" loop autoplay></lottie-player>
+            <h2>Login</h2>
+            <form action="#" method="POST">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <button type="button"
+                            id="btnLogin"
+                            class="btn btn-dark my-2">
+                        Entrar
+                    </button>
+                </div>
+            </form>
+            <a href="forgot_password.php" class="forgot-password">Esqueci minha senha</a>
+            <a href="create_account.php" class="forgot-password">Criar uma conta</a>
+            <div id="alert-container"></div>
         </div>
-        <div class="form-group">
-            <label for="password">Senha</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-        <button type="submit">Logar</button>
-    </form>
-    <a href="forgot_password.php" class="forgot-password">Esqueci minha senha</a>
-    <a href="create_account.php" class="forgot-password">Criar uma conta</a>
+    </div>
 
 
-    <div id="alert-container"></div>
 </div>
+<div class="pic"></div>
 </body>
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
+
         $.ajax({
             url: 'app.php?action=verificarAutomigrate',
             type: 'GET',
@@ -52,7 +159,7 @@ require './config.php';
             data: {
                 action: 'verificarAutomigrate'
             },
-            success: function(data) {
+            success: function (data) {
 
                 var alertClass = data.success ? 'alert-success' : 'alert-danger';
                 var alertMessage = data.message;
@@ -62,9 +169,9 @@ require './config.php';
                     '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
                     '</div>');
 
-              //  $('#alert-container').append(alertElement);
+                //  $('#alert-container').append(alertElement);
             },
-            error: function() {
+            error: function () {
                 var alertElement = $('<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
                     'Erro ao verificar a migração do banco de dados.' +
                     '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
@@ -74,12 +181,28 @@ require './config.php';
             }
         });
 
+        $('#btnLogin').on('click', function (e) {
 
-        $('form').on('submit', function(e) {
-            e.preventDefault();
 
-            var email = $('#email').val();
-            var password = $('#password').val();
+            var btn = $(this).find('button[type="submit"]');
+            btn.addClass('loading').prop('disabled', true);
+
+            var email = $('#email').val().trim();
+            var password = $('#password').val().trim();
+
+            // Verifica se os campos estão preenchidos
+            if (email === '' || password === '') {
+                var messageElement = $('#alert-container');
+                messageElement.text('Preencha todos os campos.');
+                messageElement.addClass('animate__animated animate__fadeIn text-danger');
+                setTimeout(function () {
+                    messageElement.removeClass('animate__animated animate__fadeIn');
+                    messageElement.text('');
+                }, 2000);
+                return;
+            }
+
+
 
             $.ajax({
                 url: 'app.php',
@@ -90,22 +213,41 @@ require './config.php';
                     email: email,
                     password: password
                 },
-                success: function(data) {
+                success: function (data) {
+                    var messageElement = $('#alert-container');
                     if (data.authenticated) {
-                        alert('Login bem-sucedido!');
+                        messageElement.text('Login bem-sucedido!');
+                        messageElement.addClass('animate__animated animate__fadeIn');
                         //enviar para a página de dashboard
-                        window.location.href = 'dashboard.php?auth=true';
+                        setTimeout(function () {
+                            window.location.href = 'dashboard.php?auth=true';
+                        }, 2000);
                     } else {
-                        alert('Email ou senha incorretos.');
+                        messageElement.text('Email ou senha incorretos.');
+                        messageElement.addClass('animate__animated animate__fadeIn text-danger');
                     }
+                    setTimeout(function () {
+                        messageElement.removeClass('animate__animated animate__fadeIn');
+                        messageElement.text('');
+                    }, 2000);
                 },
-                error: function() {
-                    alert('Erro ao fazer login.');
+                error: function () {
+                    var messageElement = $('#alert-container');
+                    messageElement.text('Erro ao fazer login.');
+                    messageElement.addClass('animate__animated animate__fadeIn');
+                    setTimeout(function () {
+                        messageElement.removeClass('animate__animated animate__fadeIn');
+                        messageElement.text('');
+                    }, 2000);
+                },
+                complete: function () {
+                    // Remove a classe 'loading' do botão e reativa-o
+                    btn.removeClass('loading').prop('disabled', false);
                 }
             });
+
         });
     });
-
 
 
 </script>
