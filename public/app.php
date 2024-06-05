@@ -27,6 +27,12 @@ try {
             $authenticated = authenticate($email, $password);
             echo json_encode(['authenticated' => $authenticated]);
         }
+        if ($action == 'create_account') {
+
+            // Aqui você deve implementar a função createAccount que irá criar a conta do usuário no banco de dados
+            $retorno = createAccount($_POST);
+            echo json_encode($retorno);
+        }
     }
 
 } catch (Exception $e) {

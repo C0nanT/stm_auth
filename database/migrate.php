@@ -54,6 +54,14 @@ class DatabaseMigration
         return $output;
     }
 
+    public function checkMigrationTable()
+    {
+        $sql = "SHOW TABLES LIKE 'users'";
+        $result = $this->conn->query($sql);
+        return $result->num_rows > 0;
+
+    }
+
     private function dropDatabase()
     {
         $sql = "DROP DATABASE IF EXISTS $this->dbName";

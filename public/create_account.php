@@ -100,7 +100,7 @@ require './config.php';
         <div class="col-12 w-100">
             <a href="index.php" class="btn btn-light my-2">Voltar</a>
             <h2>Criar conta</h2>
-            <form action="#" method="POST">
+            <form action="#" method="POST" class="">
                 <div class="form-group">
                     <label for="nome">Nome completo</label>
                     <input type="text" id="nome" name="nome" class="form-control" required>
@@ -115,8 +115,19 @@ require './config.php';
                 </div>
                 <div class="form-group">
                     <label for="password_check">Confirme a senha</label>
-                    <input type="text" id="password_check" name="password_check" class="form-control" required>
+                    <input type="password" id="password_check" name="password_check" class="form-control" required>
                 </div>
+
+                <div class="form-group">
+                    <label for="nome">Pergunta para verificação da conta ?</label>
+                    <input type="text" id="pergunta" name="pergunta" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="nome">Resposta para verificação da conta</label>
+                    <input type="text" id="resposta" name="resposta" class="form-control" required>
+                </div>
+
                 <div class="form-group my-2 small">
 
                     <input type="checkbox" id="concordo" name="concordo" value="concordo">
@@ -131,6 +142,7 @@ require './config.php';
                         Criar conta
                     </button>
                 </div>
+
             </form>
             <div id="alert-container"></div>
         </div>
@@ -144,45 +156,19 @@ require './config.php';
 
     $(document).ready(function () {
 
-        $.ajax({
-            url: 'app.php?action=verificarAutomigrate',
-            type: 'GET',
-            dataType: 'json',
-            data: {
-                action: 'verificarAutomigrate'
-            },
-            success: function (data) {
-
-                var alertClass = data.success ? 'alert-success' : 'alert-danger';
-                var alertMessage = data.message;
-
-                var alertElement = $('<div class="alert ' + alertClass + ' alert-dismissible fade show" role="alert">' +
-                    alertMessage +
-                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
-                    '</div>');
-
-                //  $('#alert-container').append(alertElement);
-            },
-            error: function () {
-                var alertElement = $('<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
-                    'Erro ao verificar a migração do banco de dados.' +
-                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
-                    '</div>');
-
-                $('#alert-container').append(alertElement);
-            }
-        });
-
-        $('#btnLogin').on('click', function (e) {
-
-            var btn = $(this).find('button[type="submit"]');
+        $('#btnCreateAccount').on('click', function (e) {
+            var btn = $(this);
             btn.addClass('loading').prop('disabled', true);
 
+            var nome = $('#nome').val().trim();
             var email = $('#email').val().trim();
             var password = $('#password').val().trim();
+            var password_check = $('#password_check').val().trim();
+            var pergunta = $('#pergunta').val().trim();
+            var resposta = $('#resposta').val().trim();
 
             // Verifica se os campos estão preenchidos
-            if (email === '' || password === '') {
+            if (nome === '' || email === '' || password === '' || password_check === '' || pergunta === '' || resposta === '') {
                 var messageElement = $('#alert-container');
                 messageElement.text('Preencha todos os campos.');
                 messageElement.addClass('animate__animated animate__fadeIn text-danger');
@@ -190,51 +176,86 @@ require './config.php';
                     messageElement.removeClass('animate__animated animate__fadeIn');
                     messageElement.text('');
                 }, 2000);
+
+                btn.removeClass('loading').prop('disabled', false);
+
                 return;
             }
+
+            // Verifica se as senhas são iguais
+            if (password !== password_check) {
+                var messageElement = $('#alert-container');
+                messageElement.text('As senhas não são iguais.');
+                messageElement.addClass('animate__animated animate__fadeIn text-danger');
+                setTimeout(function () {
+                    messageElement.removeClass('animate__animated animate__fadeIn');
+                    messageElement.text('');
+                }, 2000);
+                btn.removeClass('loading').prop('disabled', false);
+                return;
+            }
+
+            //colocar loading no botão colocar loading no botão
+            btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Carregando...');
+
 
             $.ajax({
                 url: 'app.php',
                 type: 'POST',
                 dataType: 'json',
                 data: {
-                    action: 'login',
+                    action: 'create_account',
+                    nome: nome,
                     email: email,
-                    password: password
+                    password: password,
+                    pergunta: pergunta,
+                    resposta: resposta,
                 },
                 success: function (data) {
+
+                    //arrumar o html do botão
+                    btn.html('Criar conta');
+
                     var messageElement = $('#alert-container');
-                    if (data.authenticated) {
-                        messageElement.text('Login bem-sucedido!');
+                    if (data.status) {
+                        messageElement.text('Conta criada com sucesso!');
                         messageElement.addClass('animate__animated animate__fadeIn');
-                        //enviar para a página de dashboard
                         setTimeout(function () {
-                            window.location.href = 'dashboard.php?auth=true';
+                            //window.location.href = 'index.php';
                         }, 2000);
                     } else {
-                        messageElement.text('Email ou senha incorretos.');
+                        messageElement.text(data.error || 'Erro ao criar conta.');
                         messageElement.addClass('animate__animated animate__fadeIn text-danger');
+
                     }
                     setTimeout(function () {
                         messageElement.removeClass('animate__animated animate__fadeIn');
                         messageElement.text('');
                     }, 2000);
+
+                    btn.removeClass('loading').prop('disabled', false);
                 },
                 error: function () {
+
+                    //arrumar o html do botão
+                    btn.html('Criar conta');
+
                     var messageElement = $('#alert-container');
-                    messageElement.text('Erro ao fazer login.');
+                    messageElement.text('Erro ao criar conta.');
                     messageElement.addClass('animate__animated animate__fadeIn');
                     setTimeout(function () {
                         messageElement.removeClass('animate__animated animate__fadeIn');
                         messageElement.text('');
+                        btn.removeClass('loading').prop('disabled', false);
                     }, 2000);
                 },
                 complete: function () {
+                    //arrumar o html do botão
+                    btn.html('Criar conta');
                     // Remove a classe 'loading' do botão e reativa-o
                     btn.removeClass('loading').prop('disabled', false);
                 }
             });
-
         });
     });
 
