@@ -4,8 +4,7 @@
   "description": "<h1>Sistema de Autenticação</h1>\r   <p>\r       Este é um projeto de sistema de autenticação que permite a criação e o login de usuários. Foi desenvolvido como\r       seminário para a Uniasselvi.\r   </p>",
   "main": "index.js",
   "scripts": {
-    "mkdir": "mkdirp public/assets/bootstrap/ public/assets/jquery/ public/assets/animate/",
-    "dist": "npm run mkdir && cp -R node_modules/bootstrap/dist/* public/assets/bootstrap/ && cp -R node_modules/jquery/dist/* public/assets/jquery/ && cp node_modules/animate.css/animate.min.css public/assets/animate/"
+    "dist": "grunt"
   },
   "keywords": [],
   "author": "",
@@ -13,9 +12,15 @@
   "dependencies": {
     "animate.css": "^4.1.1",
     "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
     "jquery": "^3.7.1"
   },
   "devDependencies": {
+    "grunt": "^1.6.1",
+    "grunt-contrib-concat": "^2.1.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-cssmin": "^5.0.0",
+    "grunt-contrib-uglify": "^5.2.2",
     "mkdirp": "^3.0.1"
   }
 }

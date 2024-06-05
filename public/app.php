@@ -17,6 +17,7 @@ try {
             echo json_encode($retorno);
 
         }
+
     }
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -26,6 +27,21 @@ try {
             $password = $_POST['password'];
             $authenticated = authenticate($email, $password);
             echo json_encode(['authenticated' => $authenticated]);
+        }
+        if ($action == 'create_account') {
+
+            // Aqui você deve implementar a função createAccount que irá criar a conta do usuário no banco de dados
+            $retorno = createAccount($_POST);
+            echo json_encode($retorno);
+        }
+        if($action == 'logout') {
+            session_start();
+            session_destroy();
+            echo json_encode(['status' => true]);
+        }
+        if($action == 'getusers'){
+            $users = getUsers();
+            echo json_encode($users);
         }
     }
 

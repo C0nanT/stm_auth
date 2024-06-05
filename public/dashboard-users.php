@@ -107,10 +107,10 @@ $user = $_SESSION['user'];
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="dashboard.php">Dashboard</a>
+                    <a class="nav-link active" href="dashboard.php">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="dashboard-users.php">Usuários</a>
+                    <a class="nav-link" aria-current="page"  href="dashboard-users.php">Usuários</a>
                 </li>
 
             </ul>
@@ -137,22 +137,21 @@ $user = $_SESSION['user'];
     <div class="card card-body border-0">
         <h5 >
             <i class="bi bi-bar-chart-steps"></i>
-            Dados analytics</h5>
+            Usuários</h5>
         <hr/>
 
         <div class="container my-4">
-            <div class="row">
-                <div class="col-sm-4">
-                    <canvas id="userChart"></canvas>
-                </div>
-            </div>
-
+            <div id="table"></div>
         </div>
     </div>
 
 
 </div>
 <script>
+
+    // Adicione a tabela ao elemento desejado
+    $('#table').append(table);
+
     $(document).ready(function () {
         $('#openMenu').click(function (event) {
             event.stopPropagation();
@@ -199,59 +198,33 @@ $user = $_SESSION['user'];
                 action: 'getusers'
             },
             success: function (data) {
-                var ctx = document.getElementById('userChart').getContext('2d');
+                var table = $('<table></table>').addClass('table');
 
-                // Count the occurrences of each user name
-                var userCounts = {};
+                // Cabeçalho da tabela
+                var thead = $('<thead></thead>');
+                var headerRow = $('<tr></tr>');
+                headerRow.append('<th>Nome</th>');
+                headerRow.append('<th>Email</th>');
+                // Adicione mais colunas conforme necessário
+                thead.append(headerRow);
+                table.append(thead);
+
+                // Corpo da tabela
+                var tbody = $('<tbody></tbody>');
                 data.forEach(user => {
-                    if (userCounts[user.name]) {
-                        userCounts[user.name]++;
-                    } else {
-                        userCounts[user.name] = 1;
-                    }
+                    var row = $('<tr></tr>');
+                    row.append('<td>' + user.name + '</td>');
+                    row.append('<td>' + user.email + '</td>');
+                    // Adicione mais colunas conforme necessário
+                    tbody.append(row);
                 });
+                table.append(tbody);
 
-                // Generate random colors for each bar
-                var colors = Array(Object.keys(userCounts).length).fill().map(() => {
-                    var r = Math.floor(Math.random() * 256);
-                    var g = Math.floor(Math.random() * 256);
-                    var b = Math.floor(Math.random() * 256);
-                    return 'rgba(' + r + ', ' + g + ', ' + b + ', 0.2)';
-                });
-
-                var chart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: Object.keys(userCounts),
-                        datasets: [{
-                            label: 'Users',
-                            data: Object.values(userCounts),
-                            backgroundColor: colors,
-                            borderColor: colors.map(color => color.replace('0.2', '1')),
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        animation: {
-                            duration: 2000, // general animation time
-                        },
-                        hover: {
-                            animationDuration: 1000, // duration of animations when hovering an item
-                        },
-                        responsiveAnimationDuration: 1000, // animation duration after a resize
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
-                    }
-                });
-
-                // Add animate.css class to the canvas
-                $('#userChart').addClass('animate__animated animate__bounce');
+                // Adicione a tabela ao elemento desejado
+                $('#table').append(table);
             },
             error: function () {
-                alert('Erro ao tentar sair.');
+                alert('Erro ao tentar buscar os usuários.');
             }
         });
     }

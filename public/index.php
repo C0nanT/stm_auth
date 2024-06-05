@@ -12,13 +12,8 @@ require './config.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seminário - Uniasselvi</title>
 
-    <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/assets/animate/animate.min.css">
-    <link rel="stylesheet" href="/assets/style.css">
-
-    <script src="/assets/jquery/jquery.min.js"></script>
-    <script src="/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <link rel="stylesheet" href="dist/css/styles.min.css">
+    <script src="dist/js/scripts.min.js"></script>
     <style>
 
         * {
@@ -76,7 +71,6 @@ require './config.php';
             border: 1px solid #494954;
         }
 
-
         .inp {
             width: 350px;
             height: 50px;
@@ -88,12 +82,6 @@ require './config.php';
         a {
             text-decoration: none;
             color: #000000;
-        }
-
-        button.loading {
-            background-image: url('loading.gif');
-            background-repeat: no-repeat;
-            background-position: center;
         }
 
         .forgot-password {
@@ -118,7 +106,7 @@ require './config.php';
     <div class="pic2"></div>
 
     <div class="row">
-        <div class="col-12">
+        <div class="col-12" style="min-width: 350px">
             <lottie-player src="assets/json/logo.json" background="transparent" speed="1"
                            style="width: 100px; height: 100px;" loop autoplay></lottie-player>
             <h2>Login</h2>
@@ -134,14 +122,15 @@ require './config.php';
                 <div class="form-group">
                     <button type="button"
                             id="btnLogin"
-                            class="btn btn-dark my-2">
+                            class="btn btn-dark my-2 w-100">
                         Entrar
                     </button>
                 </div>
+                <div id="alert-container" class="text-center small"></div>
             </form>
             <a href="forgot_password.php" class="forgot-password">Esqueci minha senha</a>
             <a href="create_account.php" class="forgot-password">Criar uma conta</a>
-            <div id="alert-container"></div>
+
         </div>
     </div>
 
@@ -150,6 +139,7 @@ require './config.php';
 <div class="pic"></div>
 </body>
 <script>
+
     $(document).ready(function () {
 
         $.ajax({
@@ -203,7 +193,6 @@ require './config.php';
             }
 
 
-
             $.ajax({
                 url: 'app.php',
                 type: 'POST',
@@ -248,7 +237,6 @@ require './config.php';
 
         });
     });
-
 
 </script>
 </html>
