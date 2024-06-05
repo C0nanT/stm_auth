@@ -29,7 +29,6 @@ require './config.php';
 
         body {
             overflow: hidden;
-
             display: flex;
             width: 100vw;
             height: 100vh;
@@ -55,7 +54,6 @@ require './config.php';
             gap: 15px;
         }
 
-
         @media only screen and (max-width: 750px) {
             .pic {
                 display: none;
@@ -75,7 +73,6 @@ require './config.php';
             border: 1px solid #494954;
         }
 
-
         .inp {
             width: 350px;
             height: 50px;
@@ -87,12 +84,6 @@ require './config.php';
         a {
             text-decoration: none;
             color: #000000;
-        }
-
-        button.loading {
-            background-image: url('loading.gif');
-            background-repeat: no-repeat;
-            background-position: center;
         }
 
     </style>
@@ -125,6 +116,13 @@ require './config.php';
                 <div class="form-group">
                     <label for="password_check">Confirme a senha</label>
                     <input type="text" id="password_check" name="password_check" class="form-control" required>
+                </div>
+                <div class="form-group my-2 small">
+
+                    <input type="checkbox" id="concordo" name="concordo" value="concordo">
+                    <label for="concordo">Concordo com os termos de uso</label>
+
+
                 </div>
                 <div class="form-group">
                     <button type="button"
