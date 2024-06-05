@@ -73,7 +73,6 @@
 <p>Abra este endereço em um navegador web para acessar o sistema de autenticação.</p>
 
   <h2>Contribuição</h2>
-  <p>### Links do perfil do GitHub de cada um</p>
       <ul>
         <li><a href="https://github.com/c0nant">Conan Torres</a></li>
         <li><a href="https://github.com/thiagoedson">Thiago Edson</a></li>
