@@ -22,7 +22,6 @@
 
   <h2>Instalação</h2>
   <ol>
-
       <li>
           <p><strong>Clone o repositório:</strong></p>
           <pre><code>git clone https://github.com/C0nanT/stm_auth.git</code></pre>
