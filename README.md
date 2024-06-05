@@ -22,13 +22,14 @@
 
   <h2>Instalação</h2>
   <ol>
+
       <li>
           <p><strong>Clone o repositório:</strong></p>
-          <pre><code>git clone https://github.com/seu-usuario/seu-repositorio.git</code></pre>
+          <pre><code>git clone https://github.com/C0nanT/stm_auth.git</code></pre>
       </li>
       <li>
           <p><strong>Navegue até o diretório do projeto:</strong></p>
-          <pre><code>cd seu-repositorio</code></pre>
+          <pre><code>cd stm_auth</code></pre>
       </li>
       <li>
           <p><strong>Configure o banco de dados:</strong></p>
@@ -45,6 +46,32 @@
               inicie o servidor.</p>
       </li>
   </ol>
+
+<h2>Instalação com Docker</h2>
+<p>Este projeto pode ser facilmente instalado e executado com Docker e Docker Compose. Siga as instruções abaixo para instalar e iniciar o projeto:</p>
+<ol>
+    <li>
+        <p><strong>Instale o Docker e o Docker Compose:</strong></p>
+        <p>Se você ainda não tem o Docker e o Docker Compose instalados, siga as instruções na seção "Instalação do Docker e Docker Compose no Windows" abaixo.</p>
+    </li>
+    <li>
+        <p><strong>Clone o repositório:</strong></p>
+        <pre><code>git clone https://github.com/C0nanT/stm_auth.git</code></pre>
+    </li>
+    <li>
+        <p><strong>Navegue até o diretório do projeto:</strong></p>
+        <pre><code>cd stm_auth</code></pre>
+    </li>
+    <li>
+        <p><strong>Construa e inicie os containers Docker:</strong></p>
+        <pre><code>docker-compose up -d</code></pre>
+    </li>
+</ol>
+
+<h2>Acessando o Projeto</h2>
+<p>Após a instalação e inicialização dos containers Docker, o projeto estará disponível no seguinte endereço:</p>
+<pre><code>http://localhost:8000</code></pre>
+<p>Abra este endereço em um navegador web para acessar o sistema de autenticação.</p>
 
   <h2>Contribuição</h2>
   <p>### Links do perfil do GitHub de cada um</p>
