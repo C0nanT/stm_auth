@@ -8,12 +8,11 @@ function verificarAutomigrate(): array
         $migration = new DatabaseMigration();
 
         //Checar se a tabela de migração existe
-        if(!$migration->checkMigrationTable()) {
+        if (!$migration->checkMigrationTable()) {
             $output = $migration->migrate();
         } else {
             $output = ['message' => 'Migração já realizada', 'success' => true];
         }
-
 
 
         // Retorna a saída como um JSON
@@ -27,10 +26,27 @@ function authenticate($email, $password): bool
 {
     $db = MysqliDb::getInstance();
 
-    $user = $db->where('email', $email)->getOne('users');
-    if ($user) {
-        return password_verify($password, $user['password']);
-    } else {
+    try {
+        $db->where('email', $email);
+        $user = $db->getOne('users');
+
+        if ($user) {
+            $checkPass =  password_verify($password, $user['password']);
+
+            if($checkPass) {
+
+                //Iniciar sessão com o usuário
+                session_start();
+                $_SESSION['user'] = $user;
+
+
+                return true;
+            }
+        } else {
+            return false;
+        }
+
+    } catch (Exception $e) {
         return false;
     }
 }
@@ -50,8 +66,8 @@ function createAccount($dados): array
 
         // Basic validation
         if (empty($nome) || empty($email) || empty($password) || empty($pergunta) || empty($resposta)) {
-           $retorno['error'] = 'Preencha todos os campos';
-              return $retorno;
+            $retorno['error'] = 'Preencha todos os campos';
+            return $retorno;
         }
 
         $data = [
@@ -79,4 +95,13 @@ function createAccount($dados): array
         $retorno ['error'] = $e->getMessage();
         return $retorno;
     }
+}
+
+function  getUsers()
+{
+
+    $db = MysqliDb::getInstance();
+    $users = $db->get('users');
+    return $users;
+
 }

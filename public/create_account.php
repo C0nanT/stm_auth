@@ -12,13 +12,8 @@ require './config.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seminário - Uniasselvi</title>
 
-    <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/assets/animate/animate.min.css">
-    <link rel="stylesheet" href="/assets/style.css">
-
-    <script src="/assets/jquery/jquery.min.js"></script>
-    <script src="/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <link rel="stylesheet" href="dist/css/styles.min.css">
+    <script src="dist/js/scripts.min.js"></script>
     <style>
 
         * {
@@ -97,7 +92,7 @@ require './config.php';
     <div class="pic2"></div>
 
     <div class="row">
-        <div class="col-12 w-100">
+        <div class="col-12 w-100" style="min-width:350px">
             <a href="index.php" class="btn btn-light my-2">Voltar</a>
             <h2>Criar conta</h2>
             <form action="#" method="POST" class="">
@@ -138,13 +133,13 @@ require './config.php';
                 <div class="form-group">
                     <button type="button"
                             id="btnCreateAccount"
-                            class="btn btn-dark btn-block my-2">
+                            class="btn btn-dark btn-block my-2 w-100">
                         Criar conta
                     </button>
                 </div>
 
             </form>
-            <div id="alert-container"></div>
+            <div id="alert-container" class="text-center small"></div>
         </div>
     </div>
 
@@ -195,6 +190,19 @@ require './config.php';
                 return;
             }
 
+            //Valdiar se o checkbox foi marcado
+            if (!$('#concordo').is(':checked')) {
+                var messageElement = $('#alert-container');
+                messageElement.text('Você precisa concordar com os termos de uso.');
+                messageElement.addClass('animate__animated animate__fadeIn text-danger');
+                setTimeout(function () {
+                    messageElement.removeClass('animate__animated animate__fadeIn');
+                    messageElement.text('');
+                }, 2000);
+                btn.removeClass('loading').prop('disabled', false);
+                return;
+            }
+
             //colocar loading no botão colocar loading no botão
             btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Carregando...');
 
@@ -221,7 +229,7 @@ require './config.php';
                         messageElement.text('Conta criada com sucesso!');
                         messageElement.addClass('animate__animated animate__fadeIn');
                         setTimeout(function () {
-                            //window.location.href = 'index.php';
+                            window.location.href = 'index.php';
                         }, 2000);
                     } else {
                         messageElement.text(data.error || 'Erro ao criar conta.');

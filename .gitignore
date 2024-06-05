@@ -7,3 +7,4 @@ composer.lock
 /public/assets/bootstrap
 /public/assets/animate
 /public/assets/jquery
+package-lock.json
