@@ -14,6 +14,8 @@ require './config.php';
 
     <link rel="stylesheet" href="dist/css/styles.min.css">
     <script src="dist/js/scripts.min.js"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
     <style>
 
         * {

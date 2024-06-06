@@ -2,11 +2,12 @@
 
 class DatabaseMigration
 {
-    private $conn;
-    private $dbName;
+    private mysqli $conn;
+    private string|array|false $dbName;
 
     /**
      * Construtor da classe DatabaseMigration.
+     * @throws Exception
      */
     public function __construct()
     {
@@ -20,14 +21,12 @@ class DatabaseMigration
 
         $output [] = "Tentando conectar ao banco de dados: $servername\n";
 
-        try {
-            $this->conn = new mysqli($servername, $username, $password);
-            if ($this->conn->connect_error) {
-                $output [] = ("Falha na conexão: " . $this->conn->connect_error);
-            }
-            $output [] =  "Conexão estabelecida com sucesso\n";
-        } catch (Exception $e) {
-            $output[] =  ("Connection failed: " . $e->getMessage());
+
+        $this->conn = @new mysqli($servername, $username, $password);
+
+        if ($this->conn->connect_error) {
+            $output [] = ("Falha na conexão: " . $this->conn->connect_error);
+            throw new Exception("Falha na conexão: " . $this->conn->connect_error);
         }
 
 
@@ -35,7 +34,7 @@ class DatabaseMigration
 
     }
 
-    public function migrate()
+    public function migrate(): array
     {
         $output = [];
 
@@ -54,15 +53,22 @@ class DatabaseMigration
         return $output;
     }
 
-    public function checkMigrationTable()
+    public function checkMigrationTable(): bool
     {
+
+        $db = MysqliDb::getInstance();
+
         $sql = "SHOW TABLES LIKE 'users'";
-        $result = $this->conn->query($sql);
-        return $result->num_rows > 0;
+        $result = $db->query($sql);
+        if (is_array($result) && count($result) > 0) {
+            return true;
+        } else {
+            return false;
+        }
 
     }
 
-    private function dropDatabase()
+    private function dropDatabase(): void
     {
         $sql = "DROP DATABASE IF EXISTS $this->dbName";
         if ($this->conn->query($sql) !== TRUE) {
@@ -70,7 +76,7 @@ class DatabaseMigration
         }
     }
 
-    private function createDatabase()
+    private function createDatabase(): void
     {
         $sql = "CREATE DATABASE $this->dbName";
         if ($this->conn->query($sql) !== TRUE) {
@@ -80,7 +86,7 @@ class DatabaseMigration
         $this->conn->select_db($this->dbName);
     }
 
-    private function createUsersTable()
+    private function createUsersTable(): void
     {
         $sql = "CREATE TABLE users (
             id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -88,7 +94,7 @@ class DatabaseMigration
             email VARCHAR(100) NOT NULL UNIQUE,
             password VARCHAR(255) NOT NULL,
             password_check VARCHAR(255) NOT NULL,
-            password_check_response VARCHAR(255) NOT NULL
+            recovery_code VARCHAR(255)
         )";
 
         if ($this->conn->query($sql) !== TRUE) {
@@ -96,24 +102,53 @@ class DatabaseMigration
         }
     }
 
-    private function insertAdminUser()
+    /**
+     * @throws Exception
+     */
+    public function insertAdminUser(): array
     {
-        $password = password_hash('admin', PASSWORD_DEFAULT);
-        $password_check_response = 'admin';
+        $faker = Faker\Factory::create();
 
-        $sql = "INSERT INTO users (name, email, password, password_check, password_check_response)
-                VALUES ('admin', 'admin@admin.com', '$password', 'Qual seu nome de usuário?', '$password_check_response')";
+        $password = password_hash('admin', PASSWORD_DEFAULT);
+
+        $sql = "INSERT INTO users (name, email, password, password_check)
+        VALUES ('admin', 'admin@admin.com', '$password', false)";
 
         if ($this->conn->query($sql) !== TRUE) {
             throw new Exception("Erro ao adicionar usuário admin: " . $this->conn->error);
         }
+
+        $db = MysqliDb::getInstance();
+
+        //Gerar 100 usuários aleatórios
+        $output = []; // Array para armazenar as mensagens de sucesso
+        for ($i = 0; $i < 100; $i++) {
+            $name = $faker->name;
+            $email = $faker->email;
+            $password = password_hash($faker->password, PASSWORD_DEFAULT);
+
+            $data = array(
+                'name' => $name,
+                'email' => $email,
+                'password' => $password,
+                'password_check' => 'Qual seu nome de usuário?'
+            );
+
+            $id = $db->insert('users', $data);
+            if ($id) {
+                $output[] = 'Usuário adicionado com sucesso. Id=' . $id; // Adiciona a mensagem ao array
+            } else {
+                throw new Exception('Erro ao adicionar usuário: ' . $db->getLastError());
+            }
+        }
+
+        return $output; // Retorna o array com as mensagens de sucesso
     }
 
     public function __destruct()
     {
         $this->conn->close();
     }
-
 
 
 }

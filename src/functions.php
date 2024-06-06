@@ -1,4 +1,8 @@
 <?php
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 require_once __DIR__ . '/../database/migrate.php';
 
 
@@ -31,9 +35,9 @@ function authenticate($email, $password): bool
         $user = $db->getOne('users');
 
         if ($user) {
-            $checkPass =  password_verify($password, $user['password']);
+            $checkPass = password_verify($password, $user['password']);
 
-            if($checkPass) {
+            if ($checkPass) {
 
                 //Iniciar sessão com o usuário
                 session_start();
@@ -49,8 +53,7 @@ function authenticate($email, $password): bool
     } catch (Exception $e) {
         return false;
     }
-}
-
+    }
 function createAccount($dados): array
 {
     $retorno = [
@@ -61,11 +64,9 @@ function createAccount($dados): array
         $nome = trim($dados['nome']);
         $email = trim($dados['email']);
         $password = trim($dados['password']);
-        $pergunta = trim($dados['pergunta']);
-        $resposta = trim($dados['resposta']);
 
         // Basic validation
-        if (empty($nome) || empty($email) || empty($password) || empty($pergunta) || empty($resposta)) {
+        if (empty($nome) || empty($email) || empty($password) ) {
             $retorno['error'] = 'Preencha todos os campos';
             return $retorno;
         }
@@ -74,8 +75,7 @@ function createAccount($dados): array
             'name' => $nome,
             'email' => $email,
             'password' => password_hash($password, PASSWORD_DEFAULT),
-            'password_check' => $pergunta,
-            'password_check_response' => $resposta,
+            'password_check' => false,
         ];
 
         $insert = $db->insert('users', $data);
@@ -97,11 +97,164 @@ function createAccount($dados): array
     }
 }
 
-function  getUsers()
+function getUsers(): MysqliDb|array|string
 {
 
     $db = MysqliDb::getInstance();
     $users = $db->get('users');
     return $users;
 
+}
+
+function recuperarConta($dados): array
+{
+    $retorno = [
+        'success' => false,
+        'data' => $dados
+    ];
+
+    try {
+
+
+
+
+        $db = MysqliDb::getInstance();
+
+        // Verificar se o e-mail existe no banco de dados
+        $db->where('email', $dados['email']);
+        $user = $db->getOne('users');
+
+        if (!$user) {
+            $retorno['error'] = 'E-mail não encontrado';
+            return $retorno;
+        }
+
+        // Gerar um código de recuperação único
+        $recoveryCode = bin2hex(random_bytes(8));
+
+        // Salvar o código de recuperação no banco de dados associado ao usuário
+        $db->where('id', $user['id']);
+        $updated = $db->update('users', ['recovery_code' => $recoveryCode]);
+
+        if (!$updated) {
+            $retorno['error'] = 'Erro ao salvar o código de recuperação';
+            return $retorno;
+        }
+
+        // Enviar um e-mail para o usuário com o código de recuperação
+        $subject = "Código de Recuperação";
+        $body = "Seu código de recuperação é: $recoveryCode";
+        $altBody = "Seu código de recuperação é: $recoveryCode";
+
+        if (!sendEmail($dados['email'], $user['name'], $subject, $body, $altBody)) {
+            $retorno['error'] = 'Erro ao enviar o e-mail com o código de recuperação';
+            return $retorno;
+        }
+
+        $retorno['success'] = true;
+        return $retorno;
+    } catch (Exception $e) {
+        $retorno['error'] = $e->getMessage();
+        return $retorno;
+    }
+}
+function verificarCodeConta($dados): array
+{
+    $retorno = [
+        'success' => false,
+        'data' => $dados
+    ];
+
+    try {
+        $db = MysqliDb::getInstance();
+
+        // Verificar se o e-mail existe no banco de dados
+        $db->where('email', $dados['email']);
+        $user = $db->getOne('users');
+
+        if (!$user) {
+            $retorno['error'] = 'E-mail não encontrado';
+            return $retorno;
+        }
+
+        // Comparar o código de recuperação fornecido com o código armazenado no banco de dados
+        if ($user['recovery_code'] !== $dados['recoveryCode']) {
+            $retorno['error'] = 'Código de recuperação inválido';
+            return $retorno;
+        }
+
+        $retorno['success'] = true;
+        return $retorno;
+    } catch (Exception $e) {
+        $retorno['error'] = $e->getMessage();
+        return $retorno;
+    }
+}
+
+function changePassword($dados): array
+{
+    $retorno = [
+        'success' => false,
+        'data' => $dados
+    ];
+
+    try {
+        $db = MysqliDb::getInstance();
+
+        // Verificar se o e-mail existe no banco de dados
+        $db->where('email', $dados['email']);
+        $user = $db->getOne('users');
+
+        if (!$user) {
+            $retorno['error'] = 'E-mail não encontrado';
+            return $retorno;
+        }
+
+        // Atualizar a senha do usuário no banco de dados
+        $newPassword = password_hash($dados['newPassword'], PASSWORD_DEFAULT);
+        $db->where('id', $user['id']);
+        $updated = $db->update('users', ['password' => $newPassword]);
+
+        if (!$updated) {
+            $retorno['error'] = 'Erro ao alterar a senha';
+            return $retorno;
+        }
+
+        $retorno['success'] = true;
+        return $retorno;
+    } catch (Exception $e) {
+        $retorno['error'] = $e->getMessage();
+        return $retorno;
+    }
+}
+
+function sendEmail($to, $toName, $subject, $body, $altBody = ''): bool
+{
+    $mail = new PHPMailer(true);
+
+    try {
+        // Configurações do servidor
+        $mail->isSMTP();  // Usar SMTP
+        $mail->Host = 'mail.cassonestudio.com.br';  // Servidor SMTP
+        $mail->SMTPAuth = true;  // Habilita autenticação SMTP
+        $mail->Username = 'stm@cassonestudio.com.br';  // Usuário SMTP
+        $mail->Password = 'cco)?]MCjiUB';  // Senha SMTP
+        $mail->SMTPSecure = 'tls';  // Ativar TLS, `ssl` também é uma opção
+        $mail->Port = 587;  // Porta TCP para se conectar
+
+        // Recipientes
+        $mail->setFrom('stm@cassonestudio.com.br', 'Auth');
+        $mail->addAddress($to, $toName);  // Adicionar um destinatário
+
+        // Conteúdo
+        $mail->isHTML(true);  // Definir o formato do e-mail para HTML
+        $mail->Subject = mb_convert_encoding($subject, 'ISO-8859-1', 'UTF-8');
+        $mail->Body = $body;
+        $mail->AltBody = $altBody;
+
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        return false;
+    }
 }
