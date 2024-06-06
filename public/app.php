@@ -43,6 +43,18 @@ try {
             $users = getUsers();
             echo json_encode($users);
         }
+        if($action == 'request_recovery_code'){
+            $retorno = recuperarConta($_POST);
+            echo json_encode($retorno);
+        }
+        if($action == 'verify_recovery_code'){
+            $retorno =verificarCodeConta($_POST);
+            echo json_encode($retorno);
+        }
+        if($action == 'change_password'){
+            $retorno =changePassword($_POST);
+            echo json_encode($retorno);
+        }
     }
 
 } catch (Exception $e) {

@@ -198,7 +198,7 @@ $user = $_SESSION['user'];
                 action: 'getusers'
             },
             success: function (data) {
-                var table = $('<table></table>').addClass('table');
+                var table = $('<table></table>').addClass('table table-hover small text-muted' );
 
                 // Cabeçalho da tabela
                 var thead = $('<thead></thead>');
@@ -212,8 +212,8 @@ $user = $_SESSION['user'];
                 // Corpo da tabela
                 var tbody = $('<tbody></tbody>');
                 data.forEach(user => {
-                    var row = $('<tr></tr>');
-                    row.append('<td>' + user.name + '</td>');
+                    var row = $('<tr class="text-muted"></tr>');
+                    row.append('<td><i class="bi bi-person"></i> ' + user.name + '</td>');
                     row.append('<td>' + user.email + '</td>');
                     // Adicione mais colunas conforme necessário
                     tbody.append(row);

@@ -3,7 +3,9 @@
   "description": "Projeto Paper Uniasselvi",
   "require": {
     "php": "^8.2",
-    "thingengineer/mysqli-database-class": "dev-master"
+    "thingengineer/mysqli-database-class": "dev-master",
+    "phpmailer/phpmailer": "^6.9",
+    "fakerphp/faker": "^1.23"
   },
   "autoload": {
     "psr-4": {

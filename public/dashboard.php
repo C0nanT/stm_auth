@@ -142,7 +142,7 @@ $user = $_SESSION['user'];
 
         <div class="container my-4">
             <div class="row">
-                <div class="col-sm-4">
+                <div class="col-sm-12">
                     <canvas id="userChart"></canvas>
                 </div>
             </div>
@@ -201,44 +201,44 @@ $user = $_SESSION['user'];
             success: function (data) {
                 var ctx = document.getElementById('userChart').getContext('2d');
 
-                // Count the occurrences of each user name
-                var userCounts = {};
+                // Agrupar os dados por ID de usuário
+                var userData = {};
                 data.forEach(user => {
-                    if (userCounts[user.name]) {
-                        userCounts[user.name]++;
-                    } else {
-                        userCounts[user.name] = 1;
-                    }
+                    // Adicionar um valor aleatório ao ID do usuário para emular aleatoriedade
+                    userData[user.id] = user.id + Math.random() * 10;
                 });
 
-                // Generate random colors for each bar
-                var colors = Array(Object.keys(userCounts).length).fill().map(() => {
+                // Gerar cores aleatórias para cada barra
+                var colors = Array(Object.keys(userData).length).fill().map(() => {
                     var r = Math.floor(Math.random() * 256);
                     var g = Math.floor(Math.random() * 256);
                     var b = Math.floor(Math.random() * 256);
                     return 'rgba(' + r + ', ' + g + ', ' + b + ', 0.2)';
                 });
 
+                // Criar um conjunto de dados para cada usuário
+                var datasets = [{
+                    label: 'User Count',
+                    data: Object.values(userData),
+                    backgroundColor: colors,
+                    borderColor: colors.map(color => color.replace('0.2', '1')),
+                    borderWidth: 1
+                }];
+
                 var chart = new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        labels: Object.keys(userCounts),
-                        datasets: [{
-                            label: 'Users',
-                            data: Object.values(userCounts),
-                            backgroundColor: colors,
-                            borderColor: colors.map(color => color.replace('0.2', '1')),
-                            borderWidth: 1
-                        }]
+                        labels: Object.keys(userData),
+                        datasets: datasets
                     },
                     options: {
                         animation: {
-                            duration: 2000, // general animation time
+                            duration: 2000,
                         },
                         hover: {
-                            animationDuration: 1000, // duration of animations when hovering an item
+                            animationDuration: 1000,
                         },
-                        responsiveAnimationDuration: 1000, // animation duration after a resize
+                        responsiveAnimationDuration: 1000,
                         scales: {
                             y: {
                                 beginAtZero: true
@@ -247,7 +247,6 @@ $user = $_SESSION['user'];
                     }
                 });
 
-                // Add animate.css class to the canvas
                 $('#userChart').addClass('animate__animated animate__bounce');
             },
             error: function () {

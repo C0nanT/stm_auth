@@ -113,16 +113,6 @@ require './config.php';
                     <input type="password" id="password_check" name="password_check" class="form-control" required>
                 </div>
 
-                <div class="form-group">
-                    <label for="nome">Pergunta para verificação da conta ?</label>
-                    <input type="text" id="pergunta" name="pergunta" class="form-control" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="nome">Resposta para verificação da conta</label>
-                    <input type="text" id="resposta" name="resposta" class="form-control" required>
-                </div>
-
                 <div class="form-group my-2 small">
 
                     <input type="checkbox" id="concordo" name="concordo" value="concordo">
@@ -159,11 +149,10 @@ require './config.php';
             var email = $('#email').val().trim();
             var password = $('#password').val().trim();
             var password_check = $('#password_check').val().trim();
-            var pergunta = $('#pergunta').val().trim();
-            var resposta = $('#resposta').val().trim();
+
 
             // Verifica se os campos estão preenchidos
-            if (nome === '' || email === '' || password === '' || password_check === '' || pergunta === '' || resposta === '') {
+            if (nome === '' || email === '' || password === '' || password_check === '' ) {
                 var messageElement = $('#alert-container');
                 messageElement.text('Preencha todos os campos.');
                 messageElement.addClass('animate__animated animate__fadeIn text-danger');
@@ -215,9 +204,7 @@ require './config.php';
                     action: 'create_account',
                     nome: nome,
                     email: email,
-                    password: password,
-                    pergunta: pergunta,
-                    resposta: resposta,
+                    password: password
                 },
                 success: function (data) {
 

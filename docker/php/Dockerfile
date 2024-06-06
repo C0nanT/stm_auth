@@ -77,11 +77,14 @@ RUN echo "🚀 Copiando arquivos do projeto para o container..."
 # 🛠️ Instala as dependências do Composer
 RUN composer install
 
+# 🛠️ Instala Node.js e npm
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - \
+    && apt-get install -y nodejs npm
+
 # 🛠️ Copia o arquivo package.json e instala as dependências do Node.js
 RUN npm install
 
 # 🛠️  Executa os scripts NPM
-RUN npm run mkdir
 RUN npm run dist
 
 # 🛠️ Ajusta as permissões dos arquivos e diretórios
