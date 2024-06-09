@@ -107,12 +107,9 @@ $user = $_SESSION['user'];
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                <ul class="navbar-nav">
-                    <?php
-                    echo menuApp();
-                    ?>
-
-                </ul>
+                <?php
+                echo menuApp();
+                ?>
 
             </ul>
 
@@ -137,15 +134,16 @@ $user = $_SESSION['user'];
 
     <div class="card card-body border-0">
         <h5 >
-            <i class="bi bi-bar-chart-steps"></i>
-            Dados analytics</h5>
+            <i class="bi bi-newspaper"></i>
+
+            News
+        </h5>
         <hr/>
 
         <div class="container my-4">
-            <div class="row">
-                <div class="col-sm-12">
-                    <canvas id="userChart"></canvas>
-                </div>
+
+            <div class="row" id="feed">
+
             </div>
 
         </div>
@@ -154,6 +152,10 @@ $user = $_SESSION['user'];
 
 </div>
 <script>
+
+    // Adicione a tabela ao elemento desejado
+
+
     $(document).ready(function () {
         $('#openMenu').click(function (event) {
             event.stopPropagation();
@@ -169,7 +171,7 @@ $user = $_SESSION['user'];
             }
         });
 
-        getUsers();
+        getFeedAll();
     });
 
     function logout() {
@@ -191,67 +193,48 @@ $user = $_SESSION['user'];
         });
     }
 
-    function getUsers() {
+    function getFeedAll() {
         $.ajax({
-            url: 'app.php',
-            type: 'POST',
+            url: 'app.php?action=feed',
+            type: 'GET',
             dataType: 'json',
-            data: {
-                action: 'getusers'
-            },
             success: function (data) {
-                var ctx = document.getElementById('userChart').getContext('2d');
+                var feedContainer = $('#feed'); // Selecione o container onde os cards serão inseridos
+                feedContainer.empty(); // Limpe o container
 
-                // Agrupar os dados por ID de usuário
-                var userData = {};
-                data.forEach(user => {
-                    // Adicionar um valor aleatório ao ID do usuário para emular aleatoriedade
-                    userData[user.id] = user.id + Math.random() * 10;
-                });
+                // Itere sobre cada item no feed
+                $.each(data.data.items, function (index, item) {
+                    // Crie um card para o item
 
-                // Gerar cores aleatórias para cada barra
-                var colors = Array(Object.keys(userData).length).fill().map(() => {
-                    var r = Math.floor(Math.random() * 256);
-                    var g = Math.floor(Math.random() * 256);
-                    var b = Math.floor(Math.random() * 256);
-                    return 'rgba(' + r + ', ' + g + ', ' + b + ', 0.2)';
-                });
-
-                // Criar um conjunto de dados para cada usuário
-                var datasets = [{
-                    label: 'User Count',
-                    data: Object.values(userData),
-                    backgroundColor: colors,
-                    borderColor: colors.map(color => color.replace('0.2', '1')),
-                    borderWidth: 1
-                }];
-
-                var chart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: Object.keys(userData),
-                        datasets: datasets
-                    },
-                    options: {
-                        animation: {
-                            duration: 2000,
-                        },
-                        hover: {
-                            animationDuration: 1000,
-                        },
-                        responsiveAnimationDuration: 1000,
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
+                    var card = $('<div class="card">');
+                    // Adicione a imagem ao card, se disponível
+                    if (item.enclosure) {
+                        var cardImage = $('<img class="card-img-top">').attr('src', item.enclosure);
+                        card.append(cardImage);
                     }
-                });
+                    var cardBody = $('<div class="card-body">');
+                    var cardTitle = $('<h5 class="card-title">').text(item.title);
+                    var cardText = $('<p class="card-text">').text(item.description);
+                    var cardLink = $('<a class="card-link">').attr('href', item.link).text('Read more');
+                    var cardAuthor = $('<p class="card-text"><small class="text-muted">').text('By ' + item.creator);
+                    var cardPubDate = $('<p class="card-text"><small class="text-muted">').text('Published on ' + item.pubDate);
 
-                $('#userChart').addClass('animate__animated animate__bounce');
+
+
+                    // Adicione o título, o texto, o autor, a data de publicação e o link ao corpo do card
+                    cardBody.append(cardTitle, cardText, cardAuthor, cardPubDate, cardLink);
+                    card.append(cardBody);
+
+                    var item_col = $('<div class="col-sm-3">');
+                    item_col.append(card);
+
+                    // Adicione o card ao container
+                    feedContainer.append(item_col);
+                });
             },
-            error: function () {
-                alert('Erro ao tentar sair.');
+            error: function (e) {
+                console.log(e);
+                alert('Erro ao tentar buscar os usuários.');
             }
         });
     }

@@ -258,3 +258,77 @@ function sendEmail($to, $toName, $subject, $body, $altBody = ''): bool
         return false;
     }
 }
+
+function fetchNewsFeed(): SimpleXMLElement
+{
+    $feedUrl = 'https://rss.tecmundo.com.br/feed';
+    $news = @simplexml_load_file($feedUrl);
+
+    if ($news === false) {
+        throw new Exception('Failed to load news feed.');
+    }
+
+    return $news;
+}
+
+function parseNewsItem(SimpleXMLElement $item): array
+{
+    $description = (string) $item->description;
+    $description = html_entity_decode($description);
+    $description = strip_tags($description);
+
+    $creator = (string) $item->children('dc', true)->creator;
+
+    $enclosure = $item->enclosure['url'] ? (string) $item->enclosure['url'] : null;
+
+    return [
+        'title' => (string) $item->title,
+        'link' => (string) $item->link,
+        'description' => $description,
+        'pubDate' => (string) $item->pubDate,
+        'creator' => $creator,
+        'enclosure' => $enclosure,
+    ];
+}
+
+function getFeedAll($dados = []): array
+{
+    $response = [
+        'success' => false,
+        'data' => $dados
+    ];
+
+    try {
+        $news = fetchNewsFeed();
+
+        $feeds = [];
+        foreach ($news->channel->item as $item) {
+            $feeds[] = parseNewsItem($item);
+        }
+
+        $response['success'] = true;
+        $response['data'] = ['items' => $feeds]; // Wrap the feeds array into an associative array
+    } catch (Exception $e) {
+        $response['error'] = $e->getMessage();
+    }
+
+    return $response;
+}
+
+function menuApp()
+{
+    $menu = '
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link active" href="dashboard.php">Dashboard</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="dashboard-users.php">Usuários</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="dashboard-feed.php">Feed</a>
+        </li>
+    </ul>';
+
+    return $menu;
+}

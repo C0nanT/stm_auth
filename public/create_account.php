@@ -116,7 +116,9 @@ require './config.php';
                 <div class="form-group my-2 small">
 
                     <input type="checkbox" id="concordo" name="concordo" value="concordo">
-                    <label for="concordo">Concordo com os termos de uso</label>
+                    <label for="concordo">Concordo com os termos de uso,
+                    <a href="terms_and_conditions.php" target="_blank" class="text-primary">clique aqui para ler.</a>
+                    </label>
 
 
                 </div>
