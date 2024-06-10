@@ -262,6 +262,7 @@ function sendEmail($to, $toName, $subject, $body, $altBody = ''): bool
 function fetchNewsFeed(): SimpleXMLElement
 {
     $feedUrl = 'https://rss.tecmundo.com.br/feed';
+    $feedUrl = 'https://g1.globo.com/rss/g1/tecnologia/';
     $news = @simplexml_load_file($feedUrl);
 
     if ($news === false) {
@@ -277,17 +278,19 @@ function parseNewsItem(SimpleXMLElement $item): array
     $description = html_entity_decode($description);
     $description = strip_tags($description);
 
-    $creator = (string) $item->children('dc', true)->creator;
-
-    $enclosure = $item->enclosure['url'] ? (string) $item->enclosure['url'] : null;
-
+    $mediaContent = $item->children('media', true)->content;
+    $enclosure = null;
+    if ($mediaContent) {
+        $enclosure = (string) $mediaContent->attributes()->url;
+    }
+    $category = (string) $item->category;
     return [
         'title' => (string) $item->title,
         'link' => (string) $item->link,
         'description' => $description,
         'pubDate' => (string) $item->pubDate,
-        'creator' => $creator,
         'enclosure' => $enclosure,
+        'category' => $category,
     ];
 }
 

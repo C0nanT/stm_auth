@@ -95,6 +95,110 @@ $user = $_SESSION['user'];
         .content.active {
             margin-left: 250px; /* Push content to the right */
         }
+
+        .card-text {
+            max-height: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (min-width: 992px) {
+            .custom-modal .modal-dialog {
+                max-width: 50%;
+                margin: 30px auto;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .custom-modal .modal-dialog {
+                margin: 0;
+                max-width: 100%;
+                height: 100%;
+                min-height: 100vh;
+            }
+
+            .custom-modal .modal-content {
+                height: auto;
+                min-height: 100vh;
+                border: 0;
+                border-radius: 0;
+            }
+        }
+
+        .card_feed {
+            height: 500px;
+            margin-bottom: 24px;
+        }
+
+        .modal-custom {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            right: 0; /* Alterado de left: 0; para right: 0; */
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+
+            border: 1px solid #888;
+            width: 50%;
+            height: 100%; /* Adicionado para garantir que o modal tenha uma altura de 100% da tela */
+            margin: auto 0 auto auto; /* Alterado para alinhar o modal à direita */
+        }
+
+        .modal-header {
+            padding: 20px;
+        }
+
+        .modal-body {
+            padding: 20px;
+            max-height: calc(100vh - 210px);
+            overflow-y: auto; /* Adicionado para garantir que o conteúdo do modal seja rolável */
+        }
+
+        .modal-header-image {
+
+            height: 700px;
+            overflow: hidden;
+            object-fit: cover;
+            background: no-repeat center center;
+            position: relative;
+        }
+
+        .modal-header-image img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            height: 100%;
+            width: auto;
+            transform: translate(-50%, -50%);
+        }
+
+        @media (min-width: 992px) {
+            .modal-dialog {
+                max-width: 50%;
+                width: 50%;
+                height: auto;
+                margin: 1.75rem auto;
+            }
+        }
+
+        .img_feed {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .no-scroll {
+            overflow: hidden;
+        }
+
+
+
     </style>
 </head>
 <body class="bg_dashboard">
@@ -133,7 +237,7 @@ $user = $_SESSION['user'];
 <div class="container my-4">
 
     <div class="card card-body border-0">
-        <h5 >
+        <h5>
             <i class="bi bi-newspaper"></i>
 
             News
@@ -149,14 +253,35 @@ $user = $_SESSION['user'];
         </div>
     </div>
 
-
 </div>
+
+<div id="customModal" class="modal-custom">
+
+    <div class="modal-content animate__animated">
+        <div class="modal-header-image" id="cover_img"> <!-- Adicionado novo elemento div -->
+
+        </div>
+        <div class="modal-header">
+            <h5 class="modal-title" id="customModalLabel">Modal Title</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="closeModal()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            Modal Content
+        </div>
+        <div class="modal-footer p-4">
+            <button type="button" class="btn btn-secondary" onclick="closeModal()">Fechar</button>
+        </div>
+    </div>
+</div>
+
+
 <script>
 
     // Adicione a tabela ao elemento desejado
 
 
     $(document).ready(function () {
+
         $('#openMenu').click(function (event) {
             event.stopPropagation();
             $('#sidebar').addClass('active');
@@ -172,6 +297,14 @@ $user = $_SESSION['user'];
         });
 
         getFeedAll();
+
+        window.onclick = function(event) {
+            var modal = document.getElementById("customModal");
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
     });
 
     function logout() {
@@ -206,23 +339,26 @@ $user = $_SESSION['user'];
                 $.each(data.data.items, function (index, item) {
                     // Crie um card para o item
 
-                    var card = $('<div class="card">');
+                    var card = $('<div class="card card_feed">');
                     // Adicione a imagem ao card, se disponível
                     if (item.enclosure) {
-                        var cardImage = $('<img class="card-img-top">').attr('src', item.enclosure);
+                        var cardImage = $('<img class="card-img-top img_feed">').attr('src', item.enclosure);
                         card.append(cardImage);
+                    } else {
+                        var cardImage = $('<img class="card-img-top img_feed">').attr('src', '/assets/images/log_app.png');
+                        card.append(cardImage);
+                        item.enclosure = '/assets/images/log_app.png';
                     }
                     var cardBody = $('<div class="card-body">');
                     var cardTitle = $('<h5 class="card-title">').text(item.title);
-                    var cardText = $('<p class="card-text">').text(item.description);
-                    var cardLink = $('<a class="card-link">').attr('href', item.link).text('Read more');
-                    var cardAuthor = $('<p class="card-text"><small class="text-muted">').text('By ' + item.creator);
-                    var cardPubDate = $('<p class="card-text"><small class="text-muted">').text('Published on ' + item.pubDate);
-
+                    //var cardText = $('<p class="card-text">').text(item.description);
+                    var cardLink = $('<a class="card-link">').attr('href', item.link).text('Acessar publicação na fonte');
+                    var cardAuthor = $('<p class="card-text"><small class="text-muted">').text('Fonte ' + item.category);
+                    var cardPubDate = $('<p class="card-text"><small class="text-muted">').text('Publicado em ' + item.pubDate);
 
 
                     // Adicione o título, o texto, o autor, a data de publicação e o link ao corpo do card
-                    cardBody.append(cardTitle, cardText, cardAuthor, cardPubDate, cardLink);
+                    cardBody.append(cardTitle, cardAuthor, cardPubDate, cardLink);
                     card.append(cardBody);
 
                     var item_col = $('<div class="col-sm-3">');
@@ -230,6 +366,11 @@ $user = $_SESSION['user'];
 
                     // Adicione o card ao container
                     feedContainer.append(item_col);
+
+                    card.click(function () {
+                        openModal(item);
+                    });
+
                 });
             },
             error: function (e) {
@@ -238,6 +379,41 @@ $user = $_SESSION['user'];
             }
         });
     }
+
+    function openModal(item) {
+        var modal = document.getElementById("customModal");
+        var modalContent = modal.querySelector(".modal-content");
+        modal.style.display = "block";
+        modalContent.classList.remove("animate__fadeOutRight"); // Alterado para a animação de saída correspondente
+        modalContent.classList.add("animate__fadeInRight"); // Alterado para a animação desejada
+
+        // Adicione o título e o conteúdo da notícia ao modal
+        var modalTitle = modal.querySelector(".modal-title");
+        var modalBody = modal.querySelector(".modal-body");
+        var modalImage = modal.querySelector("#modalImage"); // Seleciona a imagem do modal
+        modalTitle.textContent = item.title;
+        modalBody.textContent = item.description;
+      //  modalImage.src = item.enclosure; // Define a imagem do modal
+        //adicionar background no id cover_img com css
+        $("#cover_img").css("background-image", "url(" + item.enclosure + ")");
+
+        // Desabilitar o scroll da página
+        document.body.classList.add("no-scroll");
+    }
+
+    function closeModal() {
+        var modal = document.getElementById("customModal");
+        var modalContent = modal.querySelector(".modal-content");
+        modalContent.classList.remove("animate__fadeInRight"); // Alterado para a animação de entrada correspondente
+        modalContent.classList.add("animate__fadeOutRight"); // Alterado para a animação desejada
+        setTimeout(function() {
+            modal.style.display = "none";
+        }, 700); // Corresponds to animation duration
+
+        // Habilitar o scroll da página
+        document.body.classList.remove("no-scroll");
+    }
+
 </script>
 </body>
 </html>
