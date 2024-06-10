@@ -1,4 +1,5 @@
 <?php
+require './config.php';
 
 session_start();
 
@@ -106,12 +107,12 @@ $user = $_SESSION['user'];
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="dashboard.php">Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="dashboard-users.php">Usuários</a>
-                </li>
+                <ul class="navbar-nav">
+                    <?php
+                    echo menuApp();
+                    ?>
+
+                </ul>
 
             </ul>
 

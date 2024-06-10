@@ -1,6 +1,16 @@
 <?php
 require './config.php';
 
+session_start();
+
+if (!isset($_SESSION['user'])) {
+    header('Location: index.php');
+    exit;
+}
+
+$user = $_SESSION['user'];
+
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -200,12 +210,25 @@ require './config.php';
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <?php
+                echo menuApp();
+                ?>
 
+            </ul>
 
 
         </div>
         <div class="d-flex small">
+            <?php
+            echo "<p class='text-dark my-2 mx-2'>Olá, $user[name]</p>";
+            ?>
 
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link " href="#" onclick="logout();">Sair</a>
+                </li>
+            </ul>
         </div>
 
     </div>
@@ -239,11 +262,11 @@ require './config.php';
 
         </div>
         <div class="modal-header">
-            <h5 class="modal-title" id="customModalLabel">Para acessar crie faça já sua conta !</h5>
+            <h5 class="modal-title" id="customModalLabel">Modal Title</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="closeModal()" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-           <a href="login.php">Clique aqui para acessar</a>
+            Modal Content
         </div>
         <div class="modal-footer p-4">
             <button type="button" class="btn btn-secondary" onclick="closeModal()">Fechar</button>
@@ -318,11 +341,14 @@ require './config.php';
 
                     var card = $('<div class="card card_feed">');
                     // Adicione a imagem ao card, se disponível
-
+                    if (item.enclosure) {
+                        var cardImage = $('<img class="card-img-top img_feed">').attr('src', item.enclosure);
+                        card.append(cardImage);
+                    } else {
                         var cardImage = $('<img class="card-img-top img_feed">').attr('src', '/assets/images/log_app.png');
                         card.append(cardImage);
                         item.enclosure = '/assets/images/log_app.png';
-
+                    }
                     var cardBody = $('<div class="card-body">');
                     var cardTitle = $('<h5 class="card-title">').text(item.title);
                     //var cardText = $('<p class="card-text">').text(item.description);
@@ -365,7 +391,12 @@ require './config.php';
         var modalTitle = modal.querySelector(".modal-title");
         var modalBody = modal.querySelector(".modal-body");
         var modalImage = modal.querySelector("#modalImage"); // Seleciona a imagem do modal
+        modalTitle.textContent = item.title;
+        modalBody.textContent = item.description;
+      //  modalImage.src = item.enclosure; // Define a imagem do modal
+        //adicionar background no id cover_img com css
         $("#cover_img").css("background-image", "url(" + item.enclosure + ")");
+
         // Desabilitar o scroll da página
         document.body.classList.add("no-scroll");
     }

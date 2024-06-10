@@ -17,6 +17,13 @@ try {
             echo json_encode($retorno);
 
         }
+        if ($action == 'feed') {
+
+            //Verificar nome da action e chamar a funcao
+            $retorno = getFeedAll();
+            echo json_encode($retorno);
+
+        }
 
     }
 

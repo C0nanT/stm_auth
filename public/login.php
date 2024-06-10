@@ -14,6 +14,8 @@ require './config.php';
 
     <link rel="stylesheet" href="dist/css/styles.min.css">
     <script src="dist/js/scripts.min.js"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
     <style>
 
         * {
@@ -24,6 +26,7 @@ require './config.php';
 
         body {
             overflow: hidden;
+
             display: flex;
             width: 100vw;
             height: 100vh;
@@ -42,12 +45,14 @@ require './config.php';
         .container {
             width: 50%;
             height: 100%;
+
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             gap: 15px;
         }
+
 
         @media only screen and (max-width: 750px) {
             .pic {
@@ -81,25 +86,33 @@ require './config.php';
             color: #000000;
         }
 
+        .forgot-password {
+            margin-top: 10px;
+            display: block;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+            color: #0d6efd;
+        }
+
     </style>
 
 </head>
 
 <body>
-<div class="pic"></div>
 <div class="container">
 
     <div class="pic2"></div>
 
     <div class="row">
-        <div class="col-12 w-100" style="min-width:350px">
-            <a href="index.php" class="btn btn-light my-2">Voltar</a>
-            <h2>Criar conta</h2>
-            <form action="#" method="POST" class="">
-                <div class="form-group">
-                    <label for="nome">Nome completo</label>
-                    <input type="text" id="nome" name="nome" class="form-control" required>
-                </div>
+        <div class="col-12" style="min-width: 350px">
+            <lottie-player src="assets/json/logo.json" background="transparent" speed="1"
+                           style="width: 100px; height: 100px;" loop autoplay></lottie-player>
+            <h2>Login</h2>
+            <form action="#" method="POST">
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" id="email" name="email" class="form-control" required>
@@ -109,52 +122,68 @@ require './config.php';
                     <input type="password" id="password" name="password" class="form-control" required>
                 </div>
                 <div class="form-group">
-                    <label for="password_check">Confirme a senha</label>
-                    <input type="password" id="password_check" name="password_check" class="form-control" required>
-                </div>
-
-                <div class="form-group my-2 small">
-
-                    <input type="checkbox" id="concordo" name="concordo" value="concordo">
-                    <label for="concordo">Concordo com os termos de uso,
-                    <a href="terms_and_conditions.php" target="_blank" class="text-primary">clique aqui para ler.</a>
-                    </label>
-
-
-                </div>
-                <div class="form-group">
                     <button type="button"
-                            id="btnCreateAccount"
-                            class="btn btn-dark btn-block my-2 w-100">
-                        Criar conta
+                            id="btnLogin"
+                            class="btn btn-dark my-2 w-100">
+                        Entrar
                     </button>
                 </div>
-
+                <div id="alert-container" class="text-center small"></div>
             </form>
-            <div id="alert-container" class="text-center small"></div>
+            <a href="forgot_password.php" class="forgot-password">Esqueci minha senha</a>
+            <a href="create_account.php" class="forgot-password">Criar uma conta</a>
+
         </div>
     </div>
 
 
 </div>
-
+<div class="pic"></div>
 </body>
 <script>
 
     $(document).ready(function () {
 
-        $('#btnCreateAccount').on('click', function (e) {
-            var btn = $(this);
+        $.ajax({
+            url: 'app.php?action=verificarAutomigrate',
+            type: 'GET',
+            dataType: 'json',
+            data: {
+                action: 'verificarAutomigrate'
+            },
+            success: function (data) {
+
+                var alertClass = data.success ? 'alert-success' : 'alert-danger';
+                var alertMessage = data.message;
+
+                var alertElement = $('<div class="alert ' + alertClass + ' alert-dismissible fade show" role="alert">' +
+                    alertMessage +
+                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                    '</div>');
+
+                //  $('#alert-container').append(alertElement);
+            },
+            error: function () {
+                var alertElement = $('<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
+                    'Erro ao verificar a migração do banco de dados.' +
+                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                    '</div>');
+
+                $('#alert-container').append(alertElement);
+            }
+        });
+
+        $('#btnLogin').on('click', function (e) {
+
+
+            var btn = $(this).find('button[type="submit"]');
             btn.addClass('loading').prop('disabled', true);
 
-            var nome = $('#nome').val().trim();
             var email = $('#email').val().trim();
             var password = $('#password').val().trim();
-            var password_check = $('#password_check').val().trim();
-
 
             // Verifica se os campos estão preenchidos
-            if (nome === '' || email === '' || password === '' || password_check === '' ) {
+            if (email === '' || password === '') {
                 var messageElement = $('#alert-container');
                 messageElement.text('Preencha todos os campos.');
                 messageElement.addClass('animate__animated animate__fadeIn text-danger');
@@ -162,40 +191,8 @@ require './config.php';
                     messageElement.removeClass('animate__animated animate__fadeIn');
                     messageElement.text('');
                 }, 2000);
-
-                btn.removeClass('loading').prop('disabled', false);
-
                 return;
             }
-
-            // Verifica se as senhas são iguais
-            if (password !== password_check) {
-                var messageElement = $('#alert-container');
-                messageElement.text('As senhas não são iguais.');
-                messageElement.addClass('animate__animated animate__fadeIn text-danger');
-                setTimeout(function () {
-                    messageElement.removeClass('animate__animated animate__fadeIn');
-                    messageElement.text('');
-                }, 2000);
-                btn.removeClass('loading').prop('disabled', false);
-                return;
-            }
-
-            //Valdiar se o checkbox foi marcado
-            if (!$('#concordo').is(':checked')) {
-                var messageElement = $('#alert-container');
-                messageElement.text('Você precisa concordar com os termos de uso.');
-                messageElement.addClass('animate__animated animate__fadeIn text-danger');
-                setTimeout(function () {
-                    messageElement.removeClass('animate__animated animate__fadeIn');
-                    messageElement.text('');
-                }, 2000);
-                btn.removeClass('loading').prop('disabled', false);
-                return;
-            }
-
-            //colocar loading no botão colocar loading no botão
-            btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Carregando...');
 
 
             $.ajax({
@@ -203,59 +200,45 @@ require './config.php';
                 type: 'POST',
                 dataType: 'json',
                 data: {
-                    action: 'create_account',
-                    nome: nome,
+                    action: 'login',
                     email: email,
                     password: password
                 },
                 success: function (data) {
-
-                    //arrumar o html do botão
-                    btn.html('Criar conta');
-
                     var messageElement = $('#alert-container');
-                    if (data.status) {
-                        messageElement.text('Conta criada com sucesso!');
+                    if (data.authenticated) {
+                        messageElement.text('Login bem-sucedido!');
                         messageElement.addClass('animate__animated animate__fadeIn');
+                        //enviar para a página de dashboard
                         setTimeout(function () {
-                            window.location.href = 'index.php';
+                            window.location.href = 'dashboard.php?auth=true';
                         }, 2000);
                     } else {
-                        messageElement.text(data.error || 'Erro ao criar conta.');
+                        messageElement.text('Email ou senha incorretos.');
                         messageElement.addClass('animate__animated animate__fadeIn text-danger');
-
                     }
                     setTimeout(function () {
                         messageElement.removeClass('animate__animated animate__fadeIn');
                         messageElement.text('');
                     }, 2000);
-
-                    btn.removeClass('loading').prop('disabled', false);
                 },
                 error: function () {
-
-                    //arrumar o html do botão
-                    btn.html('Criar conta');
-
                     var messageElement = $('#alert-container');
-                    messageElement.text('Erro ao criar conta.');
+                    messageElement.text('Erro ao fazer login.');
                     messageElement.addClass('animate__animated animate__fadeIn');
                     setTimeout(function () {
                         messageElement.removeClass('animate__animated animate__fadeIn');
                         messageElement.text('');
-                        btn.removeClass('loading').prop('disabled', false);
                     }, 2000);
                 },
                 complete: function () {
-                    //arrumar o html do botão
-                    btn.html('Criar conta');
                     // Remove a classe 'loading' do botão e reativa-o
                     btn.removeClass('loading').prop('disabled', false);
                 }
             });
+
         });
     });
-
 
 </script>
 </html>
