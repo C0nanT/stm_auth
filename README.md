@@ -77,5 +77,5 @@
         <li><a href="https://github.com/thiagoedson">Thiago Edson</a></li>
         <li><a href="https://github.com/gabrielabarreto">Gabriela Barreto de Sousa</a></li>
         <li><a href="https://github.com/FabioSimones">Fábio Simones</a></li>
-        <li><a href="https://github.com/ViniGois">Vinicius Goes</a></li>
+        <li><a href="https://github.com/ViniGois">Vinicius Guarnieri Gois</a></li>
     </ul>
