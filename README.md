@@ -71,11 +71,11 @@
 <p>Após a instalação e inicialização dos containers Docker, o projeto estará disponível no seguinte endereço:</p>
 <pre><code>http://localhost:8000</code></pre>
 <p>Abra este endereço em um navegador web para acessar o sistema de autenticação.</p>
-
   <h2>Contribuição</h2>
       <ul>
         <li><a href="https://github.com/c0nant">Conan Torres</a></li>
         <li><a href="https://github.com/thiagoedson">Thiago Edson</a></li>
         <li><a href="https://github.com/gabrielabarreto">Gabriela Barreto de Sousa</a></li>
         <li><a href="https://github.com/FabioSimones">Fábio Simones</a></li>
+        <li><a href="https://github.com/ViniGois">Vinicius Goes</a></li>
     </ul>
