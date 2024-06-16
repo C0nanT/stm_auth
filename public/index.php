@@ -273,6 +273,8 @@ require './config.php';
             }
         });
 
+        checkDB();
+
         getFeedAll();
 
         window.onclick = function(event) {

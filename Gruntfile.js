@@ -4,7 +4,8 @@ module.exports = function(grunt) {
       js: {
         src: [
           'node_modules/jquery/dist/jquery.js',
-          'node_modules/bootstrap/dist/js/bootstrap.js'
+          'node_modules/bootstrap/dist/js/bootstrap.js',
+          'public/assets/script.js',
         ],
         dest: 'public/dist/js/scripts.js',
       },
@@ -12,7 +13,8 @@ module.exports = function(grunt) {
         src: [
           'node_modules/bootstrap/dist/css/bootstrap.css',
           'node_modules/bootstrap-icons/font/bootstrap-icons.css',
-          'node_modules/animate.css/animate.css'
+          'node_modules/animate.css/animate.css',
+          'public/assets/style.css',
         ],
         dest: 'public/dist/css/styles.css',
       },

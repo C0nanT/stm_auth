@@ -43,13 +43,10 @@ function authenticate($email, $password): bool
                 session_start();
                 $_SESSION['user'] = $user;
 
-
                 return true;
             }
-        } else {
-            return false;
         }
-
+        return false;
     } catch (Exception $e) {
         return false;
     }

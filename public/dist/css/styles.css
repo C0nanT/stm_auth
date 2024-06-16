@@ -18206,3 +18206,119 @@ url("./fonts/bootstrap-icons.woff?dd67030699838ea613ee6dbda90effa6") format("wof
   -webkit-animation-name: slideOutUp;
   animation-name: slideOutUp;
 }
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+
+
+
+
+.login-container {
+    width: 300px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-container h2 {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.login-container .form-group {
+    margin-bottom: 15px;
+}
+
+.login-container .form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.login-container .form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.login-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.login-container button:hover {
+    background-color: #0056b3;
+}
+
+.login-container .forgot-password {
+    display: block;
+    margin-top: 15px;
+    text-align: center;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.login-container .forgot-password:hover {
+    text-decoration: underline;
+}
+
+#alert-container {
+    margin-top: 20px;
+}
+
+#sidebar {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #f8f9fa;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+#sidebar.active {
+    width: 250px;
+}
+
+.sidebar-header {
+    padding: 10px;
+    background: #007bff;
+    color: white;
+}
+
+#closeMenu {
+    background: none;
+    border: none;
+    color: white;
+    position: absolute;
+    top: 0;
+    right: 10px;
+}
+
+ul.components {
+    padding: 20px 0;
+    border-top: 1px solid #47748b;
+}
+
+ul li a {
+    padding: 10px;
+    font-size: 1.2em;
+    display: block;
+    color: #007bff;
+}
