@@ -43,7 +43,7 @@ require './config.php';
 
         @media only screen and (max-width: 750px) {
             .pic {
-                display: none;
+
             }
 
             /* .pic2 {
@@ -87,7 +87,7 @@ require './config.php';
         <div class="card card-body border-0">
             <div class="pic2"></div>
             <div class="row">
-                <div class="col-6 col-6 ">
+                <div class="col-sm-6 col-sm-6 ">
                     <a href="index.php" class="btn btn-light my-2">Voltar</a>
                     <h2>Recuperar conta</h2>
 
@@ -132,6 +132,11 @@ require './config.php';
 
     $(document).ready(function () {
         $('#btnRequestCode').on('click', function (e) {
+
+            //colocar loading no btnRequestCode
+            $('#btnRequestCode').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Enviando código...');
+
+
             var email = $('#email').val().trim();
             $.ajax({
                 url: 'app.php',
@@ -161,6 +166,8 @@ require './config.php';
                     }, 2000);
                 },
                 error: function () {
+                    //remover loading do btnRequestCode
+                    $('#btnRequestCode').html('Solicitar código de recuperação');
                     var messageElement = $('#message');
                     messageElement.text('Erro ao fazer a solicitação.');
                     messageElement.addClass('animate__animated animate__fadeIn text-danger');
